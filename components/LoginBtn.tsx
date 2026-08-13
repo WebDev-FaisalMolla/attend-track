@@ -31,7 +31,11 @@ export default function LoginBtn({ entity }: Props) {
       <span className="poppins text-lg text-[#4d4d4d] transition-colors duration-300 group-hover:text-black sm:text-xl md:text-2xl">
         Login as{" "}
         <span
-          className={`font-semibold text-[#4d4d4d] transition-colors duration-300 ${entity !== "Student" ? "group-hover:text-[#0072BC]" : "group-hover:text-black"}`}
+          className={`font-semibold transition-colors duration-300 ${
+            entity === "Student"
+              ? "text-black sm:text-[#4d4d4d] sm:group-hover:text-black"
+              : "text-[#0072BC] sm:text-[#4d4d4d] sm:group-hover:text-[#0072BC]"
+          }`}
         >
           {entity}
         </span>
