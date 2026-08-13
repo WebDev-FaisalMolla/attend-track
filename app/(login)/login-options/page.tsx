@@ -83,7 +83,7 @@ export default function Login() {
 
       {/* Registration */}
       <motion.p
-        className="poppins mt-4 text-center text-base text-[#4d4d4d] sm:text-lg"
+        className="poppins mt-4 text-center text-sm text-[#4d4d4d] sm:text-lg"
         variants={itemVariants}
       >
         Don't have an account?{" "}
