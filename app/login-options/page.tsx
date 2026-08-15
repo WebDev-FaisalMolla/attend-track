@@ -37,7 +37,7 @@ const itemVariants: Variants = {
 
 export default function Login() {
   return (
-    <div className="flex flex-1 flex-col translate-y-6 items-center px-4 sm:px-6">
+    <div className="flex flex-col translate-y-6 sm:translate-y-20 items-center px-4 sm:px-6">
       {/* Mobile title */}
       <motion.h2
         initial={{
@@ -106,7 +106,7 @@ export default function Login() {
 
         {/* Registration */}
         <motion.p
-          className="poppins mt-4 text-center text-sm text-[#8b8b8b] sm:text-lg"
+          className="space mt-1 text-right text-sm text-[#8b8b8b] sm:text-md"
           variants={itemVariants}
         >
           Don't have an account?{" "}
