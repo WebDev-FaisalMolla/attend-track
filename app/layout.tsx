@@ -43,10 +43,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         ${poppins.variable}
         ${albertSans.variable}
         ${spaceGrotesk.variable}
-        h-full antialiased
+        h-screen antialiased
       `}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-screen h-screen flex flex-col">
         <Navbar />
         {children}
       </body>
