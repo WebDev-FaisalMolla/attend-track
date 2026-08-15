@@ -131,7 +131,7 @@ export default function LoginForm({ type }: LoginFormProps) {
         >
           <PrimaryBtn text="Login" />
 
-          <p className="poppins text-sm text-[#8b8b8b]">
+          <p className="space text-sm text-[#8b8b8b]">
             Facing issues?{" "}
             <Link
               href="#"
