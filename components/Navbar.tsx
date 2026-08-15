@@ -6,8 +6,7 @@ import { motion } from "motion/react";
 
 const pageTitles: Record<string, string> = {
   "/login-options": "Login",
-  "/student": "Student Dashboard",
-  "/admin": "Admin Dashboard",
+  "/login-admin": "Admin Login",
 };
 
 export default function Navbar() {

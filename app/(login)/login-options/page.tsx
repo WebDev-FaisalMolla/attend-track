@@ -37,19 +37,7 @@ const itemVariants: Variants = {
 
 export default function Login() {
   return (
-    <motion.div
-      className="flex flex-1 -translate-y-8 flex-col items-center justify-center px-4 sm:-translate-y-12 sm:px-6"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Mobile Page Title */}
-      <motion.h2
-        className="poppins mb-8 text-center text-3xl font-semibold text-[#0072BC] sm:hidden"
-        variants={itemVariants}
-      >
-        LOGIN
-      </motion.h2>
+    <motion.div variants={containerVariants} initial="hidden" animate="visible">
 
       {/* Login Options */}
       <motion.div
@@ -58,7 +46,9 @@ export default function Login() {
       >
         {/* Admin */}
         <motion.div variants={itemVariants}>
-          <LoginBtn entity="Admin" />
+          <Link href="/login-admin">
+            <LoginBtn entity="Admin" />
+          </Link>
         </motion.div>
 
         {/* Separator */}
@@ -83,7 +73,7 @@ export default function Login() {
 
       {/* Registration */}
       <motion.p
-        className="poppins mt-4 text-center text-sm text-[#4d4d4d] sm:text-lg"
+        className="poppins mt-4 text-center text-sm text-[#8b8b8b] sm:text-lg"
         variants={itemVariants}
       >
         Don't have an account?{" "}
