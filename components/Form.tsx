@@ -1,15 +1,26 @@
 "use client";
 
+import { useState } from "react";
 import { motion, type Variants } from "motion/react";
 import InputField from "@/components/InputField";
 import PrimaryBtn from "@/components/PrimaryBtn";
 import Link from "next/link";
 
-type LoginType = "admin" | "student";
+type LoginType = "admin" | "student" | "register";
 
 type LoginFormProps = {
   type: LoginType;
 };
+
+type InputPurpose =
+  | "Admin"
+  | "Key"
+  | "ID"
+  | "Password"
+  | "DOB"
+  | "Course"
+  | "Confirm"
+  | "PasswordCreate";
 
 const inputVariants: Variants = {
   hidden: {
@@ -31,19 +42,52 @@ const inputContainerVariants: Variants = {
   },
 };
 
-const formInputs: Record<LoginType, ("Admin" | "Key" | "ID" | "Password")[]> = {
+const formInputs: Record<LoginType, InputPurpose[]> = {
   admin: ["Admin", "Key"],
   student: ["ID", "Password"],
+  register: ["ID", "DOB", "Course", "PasswordCreate", "Confirm"],
 };
 
 const pageTitles: Record<LoginType, string> = {
   admin: "Admin Login",
   student: "Student Login",
+  register: "Student Registration",
 };
 
 export default function Form({ type }: LoginFormProps) {
   const inputs = formInputs[type];
   const pageTitle = pageTitles[type];
+
+  const [adminId, setAdminId] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCreate, setPasswordCreate] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [secretKey, setSecretKey] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [course, setCourse] = useState("");
+
+  const values: Record<InputPurpose, string> = {
+    Admin: adminId,
+    ID: studentId,
+    Password: password,
+    PasswordCreate: passwordCreate,
+    Confirm: confirmPassword,
+    Key: secretKey,
+    DOB: dateOfBirth,
+    Course: course,
+  };
+
+  const setters: Record<InputPurpose, (value: string) => void> = {
+    Admin: setAdminId,
+    ID: setStudentId,
+    Password: setPassword,
+    PasswordCreate: setPasswordCreate,
+    Confirm: setConfirmPassword,
+    Key: setSecretKey,
+    DOB: setDateOfBirth,
+    Course: setCourse,
+  };
 
   return (
     <div className="flex w-full flex-col items-center px-4 sm:px-6">
@@ -107,7 +151,11 @@ export default function Form({ type }: LoginFormProps) {
               }}
               className="w-full"
             >
-              <InputField purpose={input} />
+              <InputField
+                purpose={input}
+                value={values[input]}
+                onChange={setters[input]}
+              />
             </motion.div>
           ))}
         </motion.div>
@@ -129,12 +177,12 @@ export default function Form({ type }: LoginFormProps) {
           }}
           className="flex w-full flex-col items-baseline gap-1"
         >
-          <PrimaryBtn text="Login" />
+          <PrimaryBtn text={type === "register" ? "Register" : "Login"} />
 
           <p className="space text-sm text-[#8b8b8b]">
-            Facing issues?{" "}
+            {type === "register" ? "Already have an account" : "Facing issues"}?{" "}
             <Link
-              href="#"
+              href={type === "register" ? "/login-student" : "#"}
               className="
                 text-[#0072BC]
                 transition-colors
@@ -142,7 +190,11 @@ export default function Form({ type }: LoginFormProps) {
                 hover:underline
               "
             >
-              Contact the {type === "admin" ? "web manager" : "administrator"}
+              {type === "register"
+                ? "Login now"
+                : `Contact the ${
+                    type === "admin" ? "web manager" : "administrator"
+                  }`}
             </Link>
           </p>
         </motion.div>
