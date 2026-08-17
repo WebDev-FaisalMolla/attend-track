@@ -37,7 +37,7 @@ const itemVariants: Variants = {
 
 export default function Login() {
   return (
-    <div className="flex flex-col translate-y-6 sm:translate-y-20 items-center px-4 sm:px-6">
+    <div className="flex flex-col translate-y-6 sm:translate-y-[50%] items-center px-4 sm:px-6">
       {/* Mobile title */}
       <motion.h2
         initial={{
