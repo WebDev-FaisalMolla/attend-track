@@ -1,5 +1,5 @@
-import LoginForm from "@/components/LoginForm";
+import Form from "@/components/Form";
 
 export default function StudentLogin() {
-  return <LoginForm type="student" />;
+  return <Form type="student" />;
 }
