@@ -41,7 +41,7 @@ const pageTitles: Record<LoginType, string> = {
   student: "Student Login",
 };
 
-export default function LoginForm({ type }: LoginFormProps) {
+export default function Form({ type }: LoginFormProps) {
   const inputs = formInputs[type];
   const pageTitle = pageTitles[type];
 
