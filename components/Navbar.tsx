@@ -8,6 +8,7 @@ const pageTitles: Record<string, string> = {
   "/login-options": "Login",
   "/login-admin": "Admin Login",
   "/login-student": "Student Login",
+  "/register": "Registration",
 };
 
 export default function Navbar() {
