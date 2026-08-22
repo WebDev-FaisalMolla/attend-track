@@ -4,8 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
 };
 
+const networkIP = process.env.MY_NETWORK_IP || "localhost";
+
 module.exports = {
-  allowedDevOrigins: ["192.168.1.87"],
+  allowedDevOrigins: [networkIP],
 };
 
 export default nextConfig;
