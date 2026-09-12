@@ -1,5 +1,5 @@
-import Form from "@/components/Form";
+import AdminLoginForm from "@/components/forms/AdminLoginForm";
 
 export default function AdminLogin() {
-  return <Form type="admin" />;
+  return <AdminLoginForm />;
 }

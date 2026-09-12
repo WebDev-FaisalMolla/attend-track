@@ -1,6 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import {
+  forwardRef,
+  useState,
+  type ChangeEventHandler,
+  type FocusEventHandler,
+} from "react";
 
 import {
   StudentIcon,
@@ -23,11 +28,21 @@ type InputPurpose =
   | "DOB"
   | "Course";
 
-type InputProps = {
+type InputFieldProps = {
   purpose: InputPurpose;
-  value?: string;
-  onChange?: (value: string) => void;
   disabled?: boolean;
+  name?: string;
+
+  onChange?: ChangeEventHandler<
+    HTMLInputElement | HTMLSelectElement
+  >;
+
+  onBlur?: FocusEventHandler<
+    HTMLInputElement | HTMLSelectElement
+  >;
+
+  type?: string;
+  autoComplete?: string;
 };
 
 const icons: Record<InputPurpose, Icon> = {
@@ -107,48 +122,97 @@ const labels: Record<InputPurpose, string> = {
   Course: "Course",
 };
 
-export default function InputField({
-  purpose,
-  value,
-  onChange,
-  disabled = false,
-}: InputProps) {
+const InputField = forwardRef<
+  HTMLInputElement | HTMLSelectElement,
+  InputFieldProps
+>(function InputField(
+  {
+    purpose,
+    onChange,
+    onBlur,
+    disabled = false,
+    name,
+    type,
+    autoComplete,
+  },
+  ref
+) {
   const InputIcon = icons[purpose];
 
-  const isSpecialIcon = purpose === "Admin" || purpose === "Key";
+  const isSpecialIcon =
+    purpose === "Admin" || purpose === "Key";
 
   const inputId = `input-${inputNames[purpose]}`;
 
-  // Reference to the DOB input
-  const dateInputRef = useRef<HTMLInputElement>(null);
+  const isDate = purpose === "DOB";
+  const isCourse = purpose === "Course";
 
-  // Open native date picker when clicking anywhere on the DOB field
-  const openDatePicker = () => {
-    if (purpose === "DOB" && !disabled) {
-      dateInputRef.current?.showPicker();
+  /*
+   * This state is ONLY for controlling the visual
+   * DOB placeholder.
+   *
+   * React Hook Form still manages the actual form value.
+   */
+  const [hasDate, setHasDate] = useState(false);
+
+  const handleChange: ChangeEventHandler<
+    HTMLInputElement | HTMLSelectElement
+  > = (event) => {
+    if (isDate) {
+      setHasDate(
+        event.target.value.length > 0
+      );
     }
+
+    onChange?.(event);
+  };
+
+  const openDatePicker = () => {
+    if (!isDate || disabled) return;
+
+    const input = document.getElementById(
+      inputId
+    ) as HTMLInputElement | null;
+
+    input?.showPicker?.();
   };
 
   return (
-    <div
-      className="group w-full"
-      onClick={purpose === "DOB" ? openDatePicker : undefined}
-    >
-      <label htmlFor={inputId} className="sr-only">
+    <div className="group w-full">
+      {/* Accessible label */}
+
+      <label
+        htmlFor={inputId}
+        className="sr-only"
+      >
         {labels[purpose]}
       </label>
 
       <div
+        onClick={
+          isDate
+            ? openDatePicker
+            : undefined
+        }
         className={[
           "flex w-full items-center gap-4 rounded-xl border border-[#d9d9d9]",
           "bg-transparent p-5 transition-all duration-300",
+
           "focus-within:border-[#0072BC]",
+
           "focus-within:shadow-[0_0_0_3px_rgba(0,114,188,0.08)]",
-          disabled ? "cursor-not-allowed bg-[#f7f7f7] opacity-60" : "",
-          purpose === "DOB" && !disabled ? "cursor-pointer" : "",
+
+          disabled
+            ? "cursor-not-allowed bg-[#f7f7f7] opacity-60"
+            : "",
+
+          isDate && !disabled
+            ? "cursor-pointer"
+            : "",
         ].join(" ")}
       >
         {/* Icon */}
+
         <InputIcon
           size={26}
           weight="regular"
@@ -162,18 +226,31 @@ export default function InputField({
           `}
         />
 
-        {/* Course Dropdown */}
-        {purpose === "Course" ? (
+        {/* ================================================= */}
+        {/* COURSE */}
+        {/* ================================================= */}
+
+        {isCourse ? (
           <select
+            ref={
+              ref as React.Ref<HTMLSelectElement>
+            }
             id={inputId}
-            name={inputNames[purpose]}
-            value={value ?? ""}
-            onChange={(event) => onChange?.(event.target.value)}
+            name={
+              name ??
+              inputNames[purpose]
+            }
+            onChange={onChange}
+            onBlur={onBlur}
             disabled={disabled}
+            autoComplete={
+              autoComplete ??
+              autoCompleteValues[purpose]
+            }
+            defaultValue=""
             className="
               min-w-0
               flex-1
-              space
               cursor-pointer
               bg-transparent
               text-base
@@ -182,23 +259,42 @@ export default function InputField({
               outline-none
               disabled:cursor-not-allowed
               sm:text-lg
+              space
             "
           >
-            <option value="" disabled>
+            <option
+              value=""
+              disabled
+              className="space text-[#999]"
+            >
               Select your course
             </option>
 
-            <option value="BCA">BCA</option>
+            <option
+              value="BCA"
+              className="space text-[#333]"
+            >
+              BCA
+            </option>
 
-            <option value="Diploma in Computer Engineering">
+            <option
+              value="Diploma in Computer Engineering"
+              className="space text-[#333]"
+            >
               Diploma in Computer Engineering
             </option>
           </select>
         ) : (
-          /* Regular Input */
+          /* ================================================= */
+          /* NORMAL INPUT */
+          /* ================================================= */
+
           <div className="relative min-w-0 flex-1">
-            {/* Custom DOB placeholder */}
-            {purpose === "DOB" && !value && (
+            {/* ================================================= */}
+            {/* CUSTOM DOB PLACEHOLDER */}
+            {/* ================================================= */}
+
+            {isDate && !hasDate && (
               <span
                 className="
                   pointer-events-none
@@ -207,52 +303,77 @@ export default function InputField({
                   left-0
                   z-10
                   flex
-                  w-full
                   items-center
-                  bg-white
+
                   text-base
                   font-light
                   text-[#999]
-                  sm:text-lg
                   space
+
+                  sm:text-lg
+                  bg-white
                 "
               >
                 Enter your date of birth
               </span>
             )}
 
+            {/* ================================================= */}
+            {/* INPUT */}
+            {/* ================================================= */}
+
             <input
-              ref={purpose === "DOB" ? dateInputRef : undefined}
+              ref={
+                ref as React.Ref<HTMLInputElement>
+              }
               id={inputId}
-              name={inputNames[purpose]}
-              type={inputTypes[purpose]}
-              value={value ?? ""}
-              onChange={(event) => onChange?.(event.target.value)}
-              placeholder={purpose === "DOB" ? "" : placeholders[purpose]}
-              autoComplete={autoCompleteValues[purpose]}
+              name={
+                name ??
+                inputNames[purpose]
+              }
+              type={
+                type ??
+                inputTypes[purpose]
+              }
+              onChange={handleChange}
+              onBlur={onBlur}
+              placeholder={
+                isDate
+                  ? ""
+                  : placeholders[purpose]
+              }
+              autoComplete={
+                autoComplete ??
+                autoCompleteValues[purpose]
+              }
               disabled={disabled}
-              required={purpose === "DOB"}
+              required={isDate}
               className={`
+                space
                 min-w-0
                 w-full
                 flex-1
-                space
+
                 bg-transparent
+
                 text-base
                 font-light
                 text-[#333]
+
                 outline-none
+
                 placeholder:text-[#999]
+
                 disabled:cursor-not-allowed
+
                 sm:text-lg
 
                 ${
-                  purpose === "DOB"
+                  isDate
                     ? `
                       cursor-pointer
-                      select-none
-                      [&::-webkit-datetime-edit]:text-transparent
-                      [&:valid::-webkit-datetime-edit]:text-[#333]
+                      appearance-auto
+                      accent-[#0072BC]
                     `
                     : ""
                 }
@@ -263,4 +384,8 @@ export default function InputField({
       </div>
     </div>
   );
-}
+});
+
+InputField.displayName = "InputField";
+
+export default InputField;
