@@ -30,13 +30,13 @@ export default function Navbar() {
         <img
           src="/logo.png"
           alt="University Attendance System logo"
-          className="sm:h-34 sm:w-28"
+          className="h-20 w-20 sm:h-34 sm:w-28"
         />
       </Link>
 
       {/* Headings */}
       <div className="flex min-w-0 flex-col gap-1">
-        <h1 className="poppins text-3xl font-semibold text-[#0072BC] sm:text-2xl md:text-4xl">
+        <h1 className="poppins text-xl font-semibold text-[#0072BC] sm:text-2xl md:text-4xl">
           University Attendance System
         </h1>
 

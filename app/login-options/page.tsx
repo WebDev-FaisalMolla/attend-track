@@ -54,9 +54,9 @@ export default function Login() {
         }}
         className="
           poppins
-          mb-8
+          mb-4
           text-center
-          text-3xl
+          text-2xl
           font-semibold
           uppercase
           text-[#0072BC]
