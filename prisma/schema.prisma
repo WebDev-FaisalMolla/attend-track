@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LEAVE
+}
+
+model Student {
+  roll_number     String             @id
+  name            String
+  dob             DateTime           @db.Date
+  programme       String
+  year            Int
+  sem             Int
+  father_name     String
+  mother_name     String
+
+  // 🔄 Relation Links
+  attendance      Attendance[]
+
+  // ✨ 1-to-1 link pointing to the credential table (Optional if a student isn't registered yet)
+  credentials     RegisteredStudent?
+}
+
+// ✨ New Dedicated Registration & Authentication Table
+model RegisteredStudent {
+  roll_number     String   @id // 🔒 Acts as both the Primary Key and Foreign Key
+  password        String
+
+  // 🔗 1-to-1 Relation pointing directly back to the Student master record
+  student         Student  @relation(fields: [roll_number], references: [roll_number], onDelete: Cascade)
+}
+
+model Attendance {
+  id           String           @id @default(uuid())
+  roll_number  String
+  date         DateTime         @db.Date
+  IT           AttendanceStatus
+  DTP          AttendanceStatus
+  PFC          AttendanceStatus
+  ECS          AttendanceStatus
+  ESt          AttendanceStatus
+  PoE          AttendanceStatus
+
+  student      Student          @relation(fields: [roll_number], references: [roll_number], onDelete: Cascade)
+
+  @@unique([roll_number, date])
+}
